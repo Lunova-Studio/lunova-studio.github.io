@@ -1,40 +1,36 @@
 ---
-title: Welcome to Starlight
-description: Get started building your docs site with Starlight.
-template: splash # Remove or comment out this line to display the site sidebar on this page.
+title: Lunova 文档站
+description: 在此处查看由我们工作室出品的库的使用说明
+template: splash
 hero:
-  tagline: Congrats on setting up a new Starlight project!
+  tagline: 在此处查看由我们工作室出品的库的使用说明
   image:
-    file: ../../assets/houston.webp
+    file: ../../assets/icon.webp
   actions:
-    - text: Example Guide
-      link: /guides/example/
+    - text: 开始探索
+      link: /guides/welcome
       icon: right-arrow
-    - text: Read the Starlight docs
-      link: https://starlight.astro.build
+    - text: 访问 Github
+      link: https://github.com/Lunova-Studio
       icon: external
       variant: minimal
 ---
 
 import { Card, CardGrid } from '@astrojs/starlight/components';
 
-## Next steps
+## 在这里你可以
 
 <CardGrid stagger>
-	<Card title="Update content" icon="pencil">
-		Edit `src/content/docs/index.mdx` to see this page change.
+  	<Card title="快速开始" icon="rocket">
+    	从零开始，学习如何安装、配置和使用我们的核心包。
 	</Card>
-	<Card title="Change page layout" icon="document">
-		Delete `template: splash` in `src/content/docs/index.mdx` to display a
-		sidebar on this page.
-	</Card>
-	<Card title="Add new content" icon="add-document">
-		Add Markdown or MDX files to `src/content/docs` to create new pages.
-	</Card>
-	<Card title="Configure your site" icon="setting">
-		Edit your `sidebar` and other config in `astro.config.mjs`.
-	</Card>
-	<Card title="Read the docs" icon="open-book">
-		Learn more in [the Starlight Docs](https://starlight.astro.build/).
+  	<Card title="配置指南" icon="setting">
+    	了解全局配置、环境变量和各包的自定义选项。
+  	</Card>
+  	<Card title="包详细文档" icon="open-book">
+    	每个包的详细 API、类型定义、示例代码和使用场景。
+  	</Card>
+	<Card title="社区与贡献" icon="comment">
+		如何参与贡献、提交 Issue 和加入讨论。
 	</Card>
 </CardGrid>

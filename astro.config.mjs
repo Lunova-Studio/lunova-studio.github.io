@@ -22,14 +22,11 @@ export default defineConfig({
 			],
 			sidebar: [
 				{
-					label: 'Guides',
+					label: '指南',
 					items: [
-						{ label: 'Example Guide', slug: 'guides/example' },
+						{ slug: 'guides/welcome' },
+						{ slug: 'guides/joinus' },
 					],
-				},
-				{
-					label: 'Reference',
-					items: [{ autogenerate: { directory: 'reference' } }],
 				},
 			],
 		}),
