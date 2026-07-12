@@ -4,6 +4,7 @@ import md3Theme from 'starlight-theme-md3';
 
 // https://astro.build/config
 export default defineConfig({
+	site: 'https://lunova-studio.github.io/',
 	integrations: [
 		starlight({
 			title: 'Lunova 文档站',
