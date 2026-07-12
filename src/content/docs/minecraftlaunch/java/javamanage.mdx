@@ -1,0 +1,61 @@
+---
+title: Java 运行时管理
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+
+MinecraftLaunch 提供了完整的 Java 运行时管理功能，可以帮助启动器开发者：
+
+- 检测系统中已安装的 Java 环境
+- 自动选择适合 Minecraft 版本的 Java
+- 判断 Java 与 Minecraft 版本之间的兼容性
+
+通过 `JavaUtil` 可以快速完成 Java 环境扫描与管理。
+<br></br>
+
+### 检测系统中的 Java
+
+使用 `EnumerableJavaAsync()` 可以扫描当前系统中可用的 Java 运行环境。
+
+```csharp [CSharp]
+using MinecraftLaunch.Utilities;
+
+var asyncJavas = JavaUtil.EnumerableJavaAsync();
+await foreach (var java in asyncJavas)
+    Console.WriteLine(java);
+
+```
+
+<Aside type="note" title="温馨提示">
+    此方法无法保证 100% 获取系统中的所有 Java。如果 Java 安装路径比较特殊，或者没有配置到系统环境变量中，可能无法被自动发现。
+</Aside>
+<br></br>
+
+### 自动选择 Java
+
+此功能可以根据选择的游戏版本自动选择合适的 Java 供游戏启动
+```csharp
+var javas = await JavaUtil.EnumerableJavaAsync().ToListAsync();
+
+var minecraft = minecraftParser.GetMinecraft("1.12.2");
+var java = minecraft.GetAppropriateJava(javas);
+
+```
+
+<Aside type="note" title="温馨提示">
+    此示例所用的 `ToListAsync` 方法需要单独安装包 `System.Linq.Async`
+</Aside>
+<br></br>
+
+### 兼容性对照表
+
+不同 Minecraft 版本支持的 Java 版本不同。
+
+| Minecraft 版本 | 推荐 Java 版本 | 最低要求 |
+|----------------|----------------|----------|
+| 1.20.5+ | Java 21 | Java 21 |
+| 1.18 - 1.20.4 | Java 17 | Java 17 |
+| 1.17+ | Java 17 | Java 16 |
+| 1.16.5 | Java 8/11 | Java 8 |
+| 1.12.2 及以下 | Java 8 | Java 8 |

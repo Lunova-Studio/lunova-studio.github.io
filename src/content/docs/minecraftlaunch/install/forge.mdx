@@ -1,0 +1,71 @@
+---
+title: Forge 安装器
+---
+
+import { Steps, Aside } from '@astrojs/starlight/components';
+
+该安装器用于安装 Forge 加载器，支持新版 Forge 和 NeoForge。
+
+### 获取版本信息
+
+```csharp
+using MinecraftLaunch.Components.Installer;
+
+// 获取指定 Minecraft 版本的所有可用 Forge 版本
+await foreach(var version in ForgeInstaller.EnumerableForgeAsync("1.20.1")) {
+    Console.WriteLine($"Build: {version.BuildVersion}");
+}
+
+// 获取最新版本
+var latest = await ForgeInstaller.EnumerableForgeAsync("1.20.1", true)
+    .FirstOrDefaultAsync();
+```
+
+<br></br>
+
+### 初始化安装器
+
+创建一个 Forge 安装器实例。
+
+```csharp
+var installer = ForgeInstaller.Create(
+    ".minecraft",                         // 游戏根目录
+    "java.exe",                          // Java 可执行文件路径
+    forgeVersion                         // Forge 版本信息
+);
+```
+
+<br></br>
+
+### 开始安装
+
+在完成初始化后，只需要调用 `InstallAsync` 方法来进行安装
+
+```csharp
+var minecraft = await installer.InstallAsync();
+```
+
+<br></br>
+
+### 进度监控
+
+您可以通过 `ProgressChanged` 事件获取当前的安装进度，事件参数包含以下信息：
+
+| 属性名 | 描述 |
+|--------|------|
+| `Speed` | 当前下载速度，仅在 `IsStepSupportSpeed` 为 `true` 时更新值 |
+| `Progress` | 当前总体进度 |
+| `TotalStepTaskCount` | 当前步骤所有任务数 |
+| `FinishedStepTaskCount` | 已完成的步骤任务数 |
+| `Status` | 任务进度状态 |
+| `StepName` | 步骤名字 |
+| `IsStepSupportSpeed` | 当前步骤是否支持进度显示 |
+
+<br></br>
+<br></br>
+
+<Aside type="note" title="温馨提示">
+    安装 Forge 需要提供正确版本的 Java 运行时，建议：
+    - 1.17+ 版本使用 Java 17
+    - 1.16.5 及更早版本使用 Java 8
+</Aside>

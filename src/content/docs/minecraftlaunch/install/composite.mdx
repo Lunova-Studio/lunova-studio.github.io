@@ -1,0 +1,49 @@
+---
+title: 复合安装器
+---
+
+import { Steps, Aside } from '@astrojs/starlight/components';
+
+复合安装器允许你在一次操作中完成多个组件的安装，比如同时安装 Forge 和 OptiFine。
+
+### 初始化安装器
+
+创建一个复合安装器实例。
+
+```csharp
+using MinecraftLaunch.Components.Installer;
+using MinecraftLaunch.Base.Models.Network;
+
+var installer = CompositeInstaller.Create(
+    installEntries: [minecraftEntry, forgeEntry, optifineEntry],
+    mcFolder: @".minecraft",
+    javaPath: @"java.exe",
+    customId: "1.20.1-forge-optifine"
+);
+```
+
+<br></br>
+
+### 开始安装
+
+在完成初始化后，只需要调用 `InstallAsync` 方法来进行安装
+
+```csharp
+var minecraft = await installer.InstallAsync();
+```
+
+<br></br>
+
+### 进度监控
+
+您可以通过 `ProgressChanged` 事件获取当前的安装进度，事件参数包含以下信息：
+
+| 属性名 | 描述 |
+|--------|------|
+| `Speed` | 当前下载速度，仅在 `IsStepSupportSpeed` 为 `true` 时更新值 |
+| `Progress` | 当前总体进度 |
+| `TotalStepTaskCount` | 当前步骤所有任务数 |
+| `FinishedStepTaskCount` | 已完成的步骤任务数 |
+| `Status` | 任务进度状态 |
+| `StepName` | 步骤名字 |
+| `IsStepSupportSpeed` | 当前步骤是否支持进度显示 |

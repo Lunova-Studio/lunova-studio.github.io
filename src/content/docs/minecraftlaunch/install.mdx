@@ -1,0 +1,84 @@
+---
+title: 安装
+---
+
+import { Aside, Steps, Tabs, TabItem } from '@astrojs/starlight/components';
+
+### 安装方式
+
+对于 `MinecraftLaunch`  的安装，我们有两种方案可选:
+
+<Steps>
+1. 从发行包安装
+2. 从源代码引用
+</Steps>
+
+### 从发行包进行安装
+
+<br></br>
+<Tabs>
+	<TabItem label="Nuget Package Manager" icon="codePen">
+		目前，您可以方便的从 Nuget 上搜索并下载 ML 的软件包，也可以在 Visual Studio 或 Rider 的包管理器中搜索 `MinecraftLaunch` 并将其添加到您的项目：
+        ```bash
+        NuGet\Install-Package MinecraftLaunch -Version 4.0.6
+        ```
+	</TabItem>
+	<TabItem label=".NET CLI" icon="window">
+		要通过 .NET CLI 来安装 ML，您只需要将终端的工作文件夹切换到包含 .csproj 文件的项目目录中执行一下命令进行安装：
+        ```bash
+        dotnet add package MinecraftLaunch --version 4.0.6
+        ```
+	</TabItem>
+	<TabItem label="Package Reference" icon="puzzle">
+        PackageReference 是微软为现代 .NET 项目推出的一种新的软件包管理规范， 详细信息可以在 [此处](https://learn.microsoft.com/en-us/nuget/consume-packages/package-references-in-project-files) 中查看。
+        
+        您只需要将以下的 XML 代码粘贴入您的项目文件 (`.csproj`) 即可：
+		```xml
+        <PackageReference Include="MinecraftLaunch" Version="4.0.6" />
+        ```
+	</TabItem>
+</Tabs>
+
+<Aside type="note" title="温馨提示">
+	以上的代码或者命令中的 `4.0.6` 为 `MinecraftLaunch` 的版本号，随着不断地更新迭代，您可以选择其他的版本，所有的版本可以在 [此处](https://www.nuget.org/packages/MinecraftLaunch#versions-body-tab) 查看
+</Aside>
+
+<br></br>
+<br></br>
+
+### 从源代码进行引用
+
+本项目的所有源代码被托管在 Github 上，这将意味着您可以很轻松的使用 git，Github Desktop 等工具拉取和管理 `MinecraftLaunch` 的源代码。
+
+<br></br>
+#### 克隆
+
+在您所需要的位置打开终端，可选择以下方式执行以下命令进行克隆：
+
+<Tabs>
+    <TabItem label="Git" icon="seti:git">
+      ```bash [对于 git 用户]
+      git clone https://github.com/Lunova-Studio/MinecraftLaunch.git
+      ```
+    </TabItem>
+    <TabItem label="Github-CLI" icon="github">
+      ```bash [对于 github-cli 用户]
+      gh repo clone Lunova-Studio/MinecraftLaunch
+      ```
+    </TabItem>
+</Tabs>
+
+<br></br>
+#### 子模块
+
+您可以将本项目作为一个 子模块 (`Git Submodule`) 形式添加到您的项目中
+
+在您所需要的位置打开终端，执行以下命令进行添加子模块：
+
+```bash
+git submodule add https://github.com/Lunova-Studio/MinecraftLaunch.git
+```
+
+<Aside type="note" title="温馨提示">
+    Git Submodule 是一个非常实用的功能，在这里我们只展示了其最基本的用例，在 [此处](https://git-scm.com/book/en/v2/Git-Tools-Submodules) 您可以查看到更多的使用案例。
+</Aside>

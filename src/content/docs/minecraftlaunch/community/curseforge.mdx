@@ -1,0 +1,296 @@
+---
+title: CurseForge 资源管理
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+MinecraftLaunch 提供了 `CurseforgeProvider` 用于访问 CurseForge API。
+
+通过该类可以：
+
+- 获取 Mod 资源信息
+- 搜索 CurseForge Mod
+- 获取推荐资源
+- 根据 Fingerprint 匹配 Mod 文件
+- 获取 Mod 文件信息
+- 获取 Mod 下载地址
+
+### 初始化
+
+使用 CurseForge API 前，需要配置 API Key：
+
+```csharp [CSharp]
+DownloadManager.CurseforgeApiKey = "Your API Key";
+```
+
+如果未配置 API Key，在调用方法时会抛出异常：
+
+```text
+Curseforge API key is not set.
+```
+
+<br></br>
+
+
+### 根据 Mod ID 获取资源
+
+使用 `GetResourcesByModIdsAsync` 可以批量获取 Mod 信息。
+
+```csharp [CSharp]
+var provider = new CurseforgeProvider();
+
+var resources = await provider.GetResourcesByModIdsAsync(
+[
+    238222,
+    306612
+]);
+
+foreach (var resource in resources)
+{
+    Console.WriteLine(resource.Name);
+}
+```
+
+返回：
+
+```csharp
+IEnumerable<CurseforgeResource>
+```
+
+返回数据包含：
+
+- Mod 名称
+- 作者信息
+- Mod 描述
+- 图标地址
+- 分类信息
+- 支持版本
+- 文件列表
+
+
+
+### 基础搜索
+
+使用 `SearchResourcesAsync` 可以根据关键词搜索 Mod。
+
+```csharp [CSharp]
+var resources = await provider.SearchResourcesAsync(
+    "sodium"
+);
+
+foreach (var resource in resources)
+{
+    Console.WriteLine(resource.Name);
+}
+```
+
+### 指定搜索条件
+
+搜索时可以指定 Minecraft 版本以及 Mod 加载器：
+
+```csharp [CSharp]
+var resources = await provider.SearchResourcesAsync(
+    searchFilter: "optimization",
+    gameVersion: "1.20.1",
+    modLoaderType: ModLoaderType.Fabric
+);
+```
+
+支持参数：
+
+| 参数 | 说明 |
+|---|---|
+| searchFilter | 搜索关键词 |
+| classId | 资源类型 |
+| category | Mod 分类 |
+| gameVersion | Minecraft 版本 |
+| modLoaderType | Mod 加载器类型 |
+
+---
+
+### 使用搜索配置
+
+如果需要更多搜索条件，可以使用 `CurseforgeSearchOptions`。
+
+```csharp [CSharp]
+var options = new CurseforgeSearchOptions
+{
+    SearchFilter = "sodium",
+    GameVersion = "1.20.1",
+    ModLoaderType = ModLoaderType.Fabric
+};
+
+var resources = await provider.SearchResourcesAsync(options);
+```
+
+---
+
+### 获取推荐资源
+
+使用 `GetFeaturedResourcesAsync` 可以获取 CurseForge 推荐资源。
+
+```csharp [CSharp]
+var resources = await provider.GetFeaturedResourcesAsync();
+
+foreach (var resource in resources)
+{
+    Console.WriteLine(resource.Name);
+}
+```
+
+该方法会返回：
+
+- 热门资源
+- 推荐资源
+
+并自动去除重复项目。
+
+---
+
+### Fingerprint 文件匹配
+
+CurseForge 支持通过 Fingerprint 对本地 Mod 文件进行匹配。
+
+例如：
+
+```csharp [CSharp]
+var result = await provider.GetResourceFilesByFingerprintsAsync(
+[
+    123456789,
+    987654321
+]);
+```
+
+返回：
+
+```csharp
+IDictionary<
+    CurseforgeResourceFile,
+    IEnumerable<CurseforgeResourceFile>
+>
+```
+
+其中：
+
+| 类型 | 说明 |
+|---|---|
+| Key | 精确匹配到的文件 |
+| Value | 同一 Mod 的其他可用文件 |
+
+该功能可以用于：
+
+- 本地 Mod 识别
+- Mod 更新检测
+- 整合包分析
+
+---
+
+### 获取 Mod 文件信息
+
+通过 Mod ID 和文件 ID 可以获取详细文件数据。
+
+```csharp [CSharp]
+var file = await CurseforgeProvider.GetModFileEntryAsync(
+    modId,
+    fileId
+);
+```
+
+包含：
+
+- 文件名称
+- 文件大小
+- 发布时间
+- 支持版本
+- Hash 信息
+- 依赖关系
+
+### 获取 Mod 下载地址
+
+使用：
+
+```csharp [CSharp]
+var url = await CurseforgeProvider.GetModDownloadUrlAsync(
+    modId,
+    fileId
+);
+```
+
+返回：
+
+```csharp
+string
+```
+
+该地址可以直接用于下载 Mod 文件。
+
+
+### Mod 数据模型
+
+#### CurseforgeResource
+
+`CurseforgeResource` 表示 CurseForge 中的 Mod 资源。
+
+常用属性：
+
+| 属性 | 说明 |
+|---|---|
+| Id | Mod ID |
+| Name | Mod 名称 |
+| Summary | Mod 描述 |
+| Authors | 作者列表 |
+| Categories | 分类列表 |
+| IconUrl | 图标地址 |
+| WebsiteUrl | 官方页面 |
+| LatestFiles | 最新文件 |
+| MinecraftVersions | 支持版本 |
+
+<br></br>
+
+#### CurseforgeResourceFile
+
+`CurseforgeResourceFile` 表示 CurseForge 中的具体文件。
+
+常用属性：
+
+| 属性 | 说明 |
+|---|---|
+| Id | 文件 ID |
+| ModId | 所属 Mod ID |
+| FileName | 文件名称 |
+| DisplayName | 显示名称 |
+| DownloadUrl | 下载地址 |
+| FileLength | 文件大小 |
+| FileFingerprint | Fingerprint |
+| GameVersions | 支持版本 |
+| ReleaseType | 发布类型 |
+| Dependencies | 文件依赖 |
+| Sha1 | SHA1 校验值 |
+
+<br></br>
+
+### 完整示例
+
+此实例适用于控制台项目查看效果。
+
+```csharp [CSharp]
+
+var provider = new CurseforgeProvider();
+
+var mods = await provider.SearchResourcesAsync(
+    "sodium",
+    gameVersion: "1.20.1",
+    modLoaderType: ModLoaderType.Fabric
+);
+
+foreach (var mod in mods)
+{
+    Console.WriteLine(mod.Name);
+
+    foreach (var file in mod.LatestFiles)
+    {
+        Console.WriteLine(file.FileName);
+    }
+}
+
+```

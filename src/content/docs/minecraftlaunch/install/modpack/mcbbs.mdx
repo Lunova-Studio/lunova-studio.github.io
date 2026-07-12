@@ -1,0 +1,75 @@
+---
+title: MCBBS 整合包安装器
+---
+
+import { Steps, Aside } from '@astrojs/starlight/components';
+
+该安装器用于安装 MCBBS 格式的整合包。
+
+### 解析整合包信息
+
+```csharp
+var modpackEntry = McbbsModpackInstaller.ParseModpackInstallEntry("modpack.zip");
+```
+
+<br></br>
+
+### 获取模组加载器
+
+获取整合包所需要的 Minecraft 本体安装条目，可直接交付复合安装器使用。
+
+```csharp
+var modLoaderEntry = await McbbsModpackInstaller.ParseModLoaderEntryAsync(modpackEntry);
+```
+
+<br></br>
+
+### 初始化安装器
+
+创建一个 Mcbbs 整合包安装器实例。
+
+```csharp
+var installer = McbbsModpackInstaller.Create(
+    ".minecraft",       // 游戏根目录
+    "modpack.zip",   // 整合包文件路径
+    modpackEntry,       // 安装条目
+    minecraftEntry      // 目标 Minecraft 实例
+);
+```
+
+<br></br>
+
+### 开始安装
+
+在完成初始化后，只需要调用 `InstallAsync` 方法来进行安装
+
+```csharp
+var minecraft = await installer.InstallAsync();
+```
+
+<br></br>
+
+### 进度监控
+
+您可以通过 `ProgressChanged` 事件获取当前的安装进度，事件参数包含以下信息：
+
+| 属性名 | 描述 |
+|--------|------|
+| `Speed` | 当前下载速度，仅在 `IsStepSupportSpeed` 为 `true` 时更新值 |
+| `Progress` | 当前总体进度 |
+| `TotalStepTaskCount` | 当前步骤所有任务数 |
+| `FinishedStepTaskCount` | 已完成的步骤任务数 |
+| `Status` | 任务进度状态 |
+| `StepName` | 步骤名字 |
+| `IsStepSupportSpeed` | 当前步骤是否支持进度显示 |
+
+<br></br>
+<br></br>
+
+<Aside type="caution" title="注意">
+    安装 MCBBS 整合包时需注意：
+
+    1. 检查整合包是否符合 MCBBS 格式标准
+    2. 如果包含 Forge，需要提供正确的 Java 运行时
+    3. 部分整合包可能包含特定的启动配置
+</Aside>

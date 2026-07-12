@@ -1,0 +1,77 @@
+---
+title: 微软验证器
+description: 巨硬正版验证(雾)
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+~~巨硬正版验证（雾）~~
+
+该验证类型实现了微软 Xbox Live 和 Minecraft 的完整验证流程，用于正版账户登录。
+
+<Aside type="caution" title="注意">
+    需要确保你的应用程序已在 Azure 门户注册并获取了相应的 Client ID
+    并在 [Mojang API 申请表单](https://help.minecraft.net/hc/en-us/articles/16254801392141) 填写对应的申请并已经**通过**. (对应早期的 Azure App, 可以不填写表单.)
+
+    这很重要, 否则你的登录请求将不可用.
+</Aside>
+<br></br>
+
+
+### 初始化验证器
+
+```csharp
+using MinecraftLaunch.Components.Authenticator;
+
+var authenticator = new MicrosoftAuthenticator("YOUR_CLIENT_ID"); // `YOUR_CLIENT_ID`替换为你的应用程序 Client ID
+
+```
+
+### 获取一次性代码流
+
+ML 采用的更安全的设备代码流来获取微软验证所需的 `AccessToken`，因此需要通过浏览器进行登录步骤，详见以下：
+
+```csharp
+var oAuth2Token = await authenticator.DeviceFlowAuthAsync(deviceCode => {
+    Console.WriteLine($"请访问以登录: {deviceCode.VerificationUrl}");
+    Console.WriteLine($"输入一次性代码: {deviceCode.UserCode}");
+});
+
+```
+
+<Aside type="note" title="温馨提示">
+    此方法包含轮询步骤会持续占用线程，在登录完成或超时前不会执行下面的代码
+</Aside>
+<br></br>
+
+### 账户验证
+
+微软验证使用设备代码流程进行身份验证：
+
+```csharp
+var account = await authenticator.AuthenticateAsync(oAuth2Token);
+
+```
+
+### 刷新令牌
+
+当访问令牌过期时，可以使用以下方法刷新：
+
+```csharp
+var newAccount = await authenticator.RefreshAsync(oldAccount);
+
+```
+
+### 验证结果
+
+验证成功后会返回 `MicrosoftAccount` 实例，包含以下属性：
+
+- `Name` - 玩家名称
+- `Uuid` - 玩家的 UUID
+- `AccessToken` - 访问令牌
+- `RefreshToken` - 刷新令牌
+- `LastRefreshTime` - 最后刷新时间
+
+<Aside type="note" title="温馨提示">
+    刷新令牌操作会返回一个新的 `MicrosoftAccount` 实例，其中包含更新后的令牌和过期时间。
+</Aside>

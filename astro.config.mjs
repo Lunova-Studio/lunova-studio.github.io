@@ -25,7 +25,70 @@ export default defineConfig({
 					label: '指南',
 					items: [
 						{ slug: 'guides/welcome' },
-						{ slug: 'guides/joinus' },
+						{ slug: 'guides/joinus' }
+					],
+				},
+				{
+					label: 'MinecraftLaunch',
+					collapsed: true,
+					items: [
+						{ slug: 'minecraftlaunch/home' },
+						{ slug: 'minecraftlaunch/install' },
+						{ slug: 'minecraftlaunch/quickstart' },
+					    {
+							label: '启动',
+							collapsed: true,
+							items: [
+								{ slug: 'minecraftlaunch/launch/minecraftrunner' },
+								{ slug: 'minecraftlaunch/launch/minecraftmanage' }
+							],
+						},
+					    {
+							label: 'Java 管理',
+							collapsed: true,
+							items: [
+								{ slug: 'minecraftlaunch/java/javamanage' }
+							],
+						},
+						{
+							label: '账户验证器',
+							collapsed: true,
+							items: [
+								{ slug: 'minecraftlaunch/auth/ms' },
+								{ slug: 'minecraftlaunch/auth/offline' },
+								{ slug: 'minecraftlaunch/auth/yggdrasil' }
+							],
+						},
+						{
+							label: '社区资源',
+							collapsed: true,
+							items: [
+								{ slug: 'minecraftlaunch/community/curseforge' },
+								{ slug: 'minecraftlaunch/community/modrinth' },
+								{ slug: 'minecraftlaunch/community/skin' },
+							],
+						},
+						{
+							label: '安装器',
+							collapsed: true,
+							items: [
+								{ 
+									label: '整合包安装器',
+									collapsed: true,
+									items: [
+										{ slug: 'minecraftlaunch/install/modpack/curseforge' },
+										{ slug: 'minecraftlaunch/install/modpack/modrinth' },
+										{ slug: 'minecraftlaunch/install/modpack/mcbbs' }
+									]
+								},
+								{ slug: 'minecraftlaunch/install/vanilla' },
+								{ slug: 'minecraftlaunch/install/composite' },
+								{ slug: 'minecraftlaunch/install/fabric' },
+								{ slug: 'minecraftlaunch/install/forge' },
+								{ slug: 'minecraftlaunch/install/quilt' },
+								{ slug: 'minecraftlaunch/install/optifine' }
+							],
+						},
 					],
 				},
 			],

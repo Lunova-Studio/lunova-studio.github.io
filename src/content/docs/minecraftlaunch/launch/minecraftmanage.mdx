@@ -1,0 +1,76 @@
+---
+title: 游戏管理
+---
+
+MinecraftLaunch 提供了完整的 Minecraft 游戏核心管理功能，可以用于读取、解析以及管理本地 `.minecraft` 目录中的游戏版本。
+
+通过 `MinecraftParser` 可以快速获取已安装的 Minecraft 版本信息，包括不限于：
+
+- 游戏版本号
+- 是否为原版核心
+- Mod 加载器信息
+- 自定义扩展数据
+<br></br>
+
+### 初始化游戏解析器
+
+创建 `MinecraftParser` 时，只需要传入 Minecraft 游戏目录即可，
+`MinecraftParser` 会自动扫描目标目录中的：
+
+- `versions` 文件夹
+- 游戏版本配置文件
+- Mod 加载器信息
+- 其他可解析的数据文件
+
+初始化完成后即可读取本地安装的游戏核心。
+
+```csharp
+using MinecraftLaunch.Components.Parser;
+
+MinecraftParser minecraftParser = ".minecraft";
+
+```
+<br></br>
+
+### 获取已安装游戏核心列表
+
+使用 `GetMinecrafts()` 可以获取当前 Minecraft 目录下所有已安装的游戏核心。
+
+```csharp
+minecraftParser.GetMinecrafts().ForEach(x => {
+    Console.WriteLine(x.Id);
+    Console.WriteLine($"是否为原版：{x.IsVanilla}");
+
+    if (!x.IsVanilla)
+        Console.WriteLine("Mod 加载器：" + string
+            .Join("，", (x as ModifiedMinecraftEntry)?
+            .ModLoaders
+            .Select(x => $"{x.Type}_{x.Version}")));
+
+    Console.WriteLine();
+});
+
+```
+<br></br>
+
+### 读取指定 ID 的游戏核心
+
+如果已知游戏版本 ID，可以使用 `GetMinecraft()` 直接获取对应核心。
+
+```csharp
+
+var minecraft = minecraftParser.GetMinecraft("1.12.2");
+Console.WriteLine(minecraft.Id);
+
+```
+<br></br>
+
+### 自定义数据解析器
+
+此功能可以在通过 `MinecraftParser` 读取游戏核心的同时读取你自定义的数据文件，前提是你需要实现 `IDataProcessor` 接口。 MinecraftLaunch 提供了一个默认的基于官方启动器的数据文件的解析器，可由以下示例添加：
+
+```csharp
+
+MinecraftParser.DataProcessors.Add(new DefaultLauncherProfileParser());
+
+```

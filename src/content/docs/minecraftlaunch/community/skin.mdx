@@ -1,0 +1,45 @@
+---
+title: 皮肤获取器
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+`SkinProvider` 提供了获取 Minecraft 角色皮肤数据的功能，支持从 `Yggdrasil` 和 `Microsoft` 两种账户体系下获取皮肤图片流。
+
+### 获取 Microsoft 账户皮肤
+
+```csharp
+using MinecraftLaunch.Components.Provider;
+
+// 获取皮肤并保存到本地
+// 此处 account 为 MicrosoftAccount，需要提前使用 MicrosoftAuthenticator 登陆获取
+using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+await using var skinStream = await SkinProvider.GetMicrosoftSkinDataAsync(account, cts.Token);
+
+using var ms = new MemoryStream();
+await skinStream.CopyToAsync(ms, cts.Token);
+var skinBytes = ms.ToArray();
+
+await File.WriteAllBytesAsync("yggdrasil_skin.png", skinBytes, cts.Token);
+
+```
+
+<br></br>
+
+### 获取 Yggdrasil 账户皮肤
+
+```csharp
+using MinecraftLaunch.Components.Provider;
+
+// 获取皮肤数据
+// 此处 account 为 YggdrasilAccount，需要提前使用 YggdrasilAuthenticator 登陆获取
+using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+await using var skinStream = await SkinProvider.GetYggdrasilSkinDataAsync(account, cts.Token);
+
+using var ms = new MemoryStream();
+await skinStream.CopyToAsync(ms, cts.Token);
+var skinBytes = ms.ToArray();
+
+await File.WriteAllBytesAsync("yggdrasil_skin.png", skinBytes, cts.Token);
+
+```

@@ -1,0 +1,82 @@
+---
+title: OptiFine 安装器
+---
+
+import { Steps, Aside } from '@astrojs/starlight/components';
+
+该安装器用于安装 OptiFine，支持独立安装或与 Forge 联合安装。
+
+### 获取版本信息
+
+```csharp
+using MinecraftLaunch.Components.Installer;
+
+// 获取指定 Minecraft 版本的所有可用 OptiFine 版本
+await foreach(var version in OptifineInstaller.EnumerableOptifineAsync("1.20.1")) {
+    Console.WriteLine($"版本: {version.Type}_{version.Patch}");
+}
+
+// 获取最新版本
+var latest = await OptifineInstaller.EnumerableOptifineAsync("1.20.1")
+    .FirstOrDefaultAsync();
+```
+
+<br></br>
+
+### 初始化安装器
+
+```csharp
+var installer = OptifineInstaller.Create(
+    ".minecraft",     // 游戏根目录
+    "java.exe",       // Java 可执行文件路径
+    latest           // OptiFine 版本信息
+);
+
+```
+
+<br></br>
+
+### 开始安装
+
+```csharp
+// 独立安装
+var minecraft = await installer.InstallAsync();
+```
+
+你可以按照以上的代码对 Optofine 进行独立安装，或者采用下方的代码联合 Forge 进行安装
+
+```csharp
+// 与 Forge 联合安装
+var minecraft = await installer.InstallAsync(forgeVersion);
+```
+
+<br></br>
+
+### 进度监控
+
+您可以通过 `ProgressChanged` 事件获取当前的安装进度，事件参数包含以下信息：
+
+| 属性名 | 描述 |
+|--------|------|
+| `Speed` | 当前下载速度，仅在 `IsStepSupportSpeed` 为 `true` 时更新值 |
+| `Progress` | 当前总体进度 |
+| `TotalStepTaskCount` | 当前步骤所有任务数 |
+| `FinishedStepTaskCount` | 已完成的步骤任务数 |
+| `Status` | 任务进度状态 |
+| `StepName` | 步骤名字 |
+| `IsStepSupportSpeed` | 当前步骤是否支持进度显示 |
+
+<br></br>
+<br></br>
+
+<Aside type="caution" title="注意">
+    安装 OptiFine 需要注意以下要求：
+
+    1. 需要提供正确版本的 Java 运行时
+    2. 与 Forge 联合安装时需确保版本兼容性
+    3. 不支持与 Fabric/Quilt 联合安装
+</Aside>
+
+<Aside type="note" title="温馨提示">
+    使用复合安装器可以更方便地完成 Forge+OptiFine 的联合安装
+</Aside>

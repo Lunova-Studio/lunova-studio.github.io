@@ -1,0 +1,151 @@
+---
+title: Modrinth 资源管理
+---
+
+MinecraftLaunch 提供了 `ModrinthProvider` 用于访问 Modrinth API。
+
+通过该类可以：
+
+-   搜索 Modrinth 资源
+-   获取 Mod 信息
+-   获取 Mod 文件列表
+-   根据 Hash 匹配文件
+-   获取推荐资源
+-   实现 Mod 更新检测
+
+### 初始化
+
+``` csharp
+var provider = new ModrinthProvider();
+```
+
+<br></br>
+
+### 搜索资源
+
+使用 `SearchAsync` 可以根据关键词搜索 Modrinth 项目：
+
+``` csharp
+var resources = await provider.SearchAsync("sodium");
+
+foreach (var resource in resources)
+{
+    Console.WriteLine(resource.Name);
+}
+```
+
+可以指定 Minecraft 版本和 Mod 加载器：
+
+``` csharp
+var resources = await provider.SearchAsync(
+    searchFilter: "optimization",
+    version: "1.20.1",
+    modLoader: ModLoaderType.Fabric
+);
+```
+
+<br></br>
+
+### 获取资源信息
+
+通过项目 ID 获取详细信息：
+
+``` csharp
+var resource =
+    await provider.SearchByProjectIdAsync("P7dR8mSH");
+```
+
+批量获取：
+
+``` csharp
+var resources =
+    await provider.SearchByProjectIdsAsync(
+    [
+        "P7dR8mSH",
+        "AANobbMI"
+    ]);
+```
+
+<br></br>
+
+### 获取文件列表
+
+通过项目 ID 获取所有文件：
+
+``` csharp
+var files =
+    await provider.GetModFilesByProjectIdAsync(
+        "P7dR8mSH"
+    );
+```
+
+文件信息包含：
+
+| 属性 | 说明 |
+|---|---|
+| VersionId | 文件版本 ID |
+| FileName | 文件名称 |
+| DownloadUrl | 下载地址 |
+| FileSize | 文件大小 |
+| Sha1 | SHA1 校验 |
+| Sha512 | SHA512 校验 |
+| Dependencies | 依赖信息 |
+
+<br></br>
+
+### Hash 文件匹配
+
+Modrinth 支持通过文件 Hash 查找对应 Mod。
+
+``` csharp
+var files =
+    await provider.GetModFilesByHashAsync(
+        [
+            "hash"
+        ],
+        "1.20.1",
+        ModLoaderType.Fabric
+    );
+```
+
+<br></br>
+
+### 获取推荐资源
+
+返回推荐项目列表。
+
+``` csharp
+var resources =
+    await provider.GetFeaturedResourcesAsync();
+```
+
+<br></br>
+
+### 完整示例
+
+此实例适用于控制台项目查看效果。
+
+``` csharp
+var provider = new ModrinthProvider();
+
+var mods = await provider.SearchAsync(
+    "sodium",
+    version: "1.20.1",
+    modLoader: ModLoaderType.Fabric
+);
+
+foreach (var mod in mods)
+{
+    Console.WriteLine(mod.Name);
+
+    var files =
+        await provider.GetModFilesByProjectIdAsync(
+            mod.ProjectId
+        );
+
+    foreach (var file in files)
+    {
+        Console.WriteLine(file.FileName);
+    }
+}
+```

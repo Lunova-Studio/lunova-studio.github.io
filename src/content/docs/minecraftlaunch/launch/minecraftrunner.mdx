@@ -1,0 +1,79 @@
+---
+title: 启动器
+---
+
+MinecraftLaunch 提供了一套完整的 Minecraft 启动核心，支持正版账户、离线账户以及多种游戏版本启动。
+
+通过配置 `LaunchConfig` 可以快速完成游戏启动所需参数配置，并由 `MinecraftRunner` 负责执行启动流程、监控游戏状态以及处理运行结果。
+
+### 基础配置
+
+```csharp [CSharp]
+using MinecraftLaunch.Launch;
+using MinecraftLaunch.Base.Models.Game;
+
+// 此处 LaunchConfig 提供的为最基本的可以启动游戏的信息，更多参数请参考下表
+// minecraftParser 可以直接输入本地 .minecraft 文件夹路径
+MinecraftRunner runner = new(new LaunchConfig {
+    Account = account,
+    MaxMemorySize = 2048,
+    MinMemorySize = 512,
+    LauncherName = "MinecraftLaunch",
+    JavaPath = java,
+}, minecraftParser);
+
+```
+<br></br>
+<br></br>
+
+`LaunchConfig` 用于描述 Minecraft 启动时的基础配置，包括账户、Java 环境、内存分配、窗口设置以及额外 JVM 参数等。
+
+| 属性名              | 类型                    | 默认值     | 作用说明                                                                 |
+|-------------------|-------------------------|-----------|--------------------------------------------------------------------------|
+| Account           | `Account`               | 无        | 启动器使用的账户信息，包含用户凭据和身份标识。                           |
+| IsFullscreen      | `bool`                  | `false`   | 是否以全屏模式启动游戏。                                                |
+| IsEnableIndependency | `bool`              | `true`    | 是否启用独立运行模式，避免与其他配置或实例冲突。                         |
+| Width             | `int`                   | `854`     | 游戏窗口的初始宽度。                                                     |
+| Height            | `int`                   | `480`     | 游戏窗口的初始高度。                                                     |
+| MinMemorySize     | `int`                   | `512`     | JVM 最小分配内存（单位：MB），影响游戏性能。                              |
+| MaxMemorySize     | `int`                   | `1024`    | JVM 最大分配内存（单位：MB），影响游戏性能上限。                          |
+| JavaPath          | `JavaEntry`             | 无        | 指定 Java 可执行文件路径及相关信息。                                     |
+| LauncherName      | `string`                | 无        | 启动器名称，用于标识或展示。                                             |
+| NativesFolder     | `string`                | 无        | 本地库文件的存放目录，供 JVM 加载 native 代码使用。（可选）               |
+| ServerInfo        | `ServerInfo`            | 无        | 要连接的服务器信息，如 IP、端口、版本等。                                |
+| SaveName          | `string`                | 无        | 存档名称，用于标识游戏存档或配置。（此功能仅支持 1.20.2+）                |
+| JvmArguments      | `IEnumerable<string>`   | `[]`      | 额外传递给 JVM 的启动参数，用于性能调优或功能扩展。                      |
+
+
+### 启动游戏
+
+在完成启动信息配置后，你只需要调用启动器的启动完成游戏启动。
+
+
+在异步上下文中，使用 RunAsync 来完成验证：
+
+```csharp [CSharp]
+var process = await runner.RunAsync(minecraft);
+
+```
+
+在同步上下文中，使用 Run 来完成验证：
+
+```csharp [CSharp]
+var process = runner.Run(minecraft);
+
+```
+
+<br></br>
+
+### 游戏状态监控
+
+Minecraft 启动流程并不会立即创建游戏窗口，在启动过程中会经历资源检查、参数构建以及 JVM 初始化等阶段。
+
+通过返回的运行实例，可以监听游戏生命周期事件。
+
+| 事件名              | 类型                                 | 触发时机                     | 作用说明                                            |
+|-------------------|--------------------------------------|-----------------------------|------------------------------------------------------|
+| Started           | `EventHandler`                       | 游戏启动成功时               | 游戏启动时触发                                        |
+| Exited            | `EventHandler<EventArgs>`            | 游戏退出时                   | 游戏因正常退出或崩溃时触发                            |
+| OutputLogReceived | `EventHandler<LogReceivedEventArgs>` | 游戏输出日志时               | 用于捕获游戏运行时的标准输出日志，便于调试或展示给用户  |

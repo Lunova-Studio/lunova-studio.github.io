@@ -1,0 +1,33 @@
+---
+title: 初始化
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+### 配置 MinecraftLaunch
+
+在使用 MinecraftLaunch 之前，您需要在程序的入口点（通常是 `App.xaml.cs` 或 `Program.cs`） 中添加一些代码来初始化 ML 的相关服务：
+
+```csharp
+
+using MinecraftLaunch;
+
+InitializeHelper.Initialize(settings => {
+    settings.MaxThread = 256; // 最大下载线程
+    settings.MaxFragment = 128; // 最大文件分片数量
+    settings.MaxRetryCount = 4; // 最大下载重试次数
+    settings.IsEnableMirror = false; // 是否启用 Minecraft 国内下载镜像源（BMCLAPI）
+    settings.IsEnableFragment = false; // 是否启用分片下载
+    settings.CurseForgeApiKey = "Your Curseforge API"; // Curseforge API Key 设置（可选）
+    settings.UserAgent = "MLTest/1.0"; // 自定义请求时所使用的 User Agent
+});
+
+```
+
+<Aside type="tip" title="提醒">
+	在注册 CurseForge 服务前，您需要准备 CurseForge 官方下发的 API KEY。 如果您还没有，请前往 [此处](https://support.curseforge.com/en/support/solutions/articles/9000208346-about-the-curseforge-api-and-how-to-apply-for-a-key) 来获得您的 API KEY
+</Aside>
+
+<Aside type="danger" title="注意">
+	API Key 为敏感个人数据，请妥善储存，不要轻易泄露给他人
+</Aside>
