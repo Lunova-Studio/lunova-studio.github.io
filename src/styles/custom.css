@@ -1,0 +1,31 @@
+.page {
+  background-color: var(--md-sys-color-surface, var(--sl-color-bg)) !important;
+}
+
+.right-sidebar-container {
+  flex: 0 0 18rem !important;
+  width: 12rem !important;
+  max-width: 18rem !important;
+}
+
+.main-pane {
+  flex: 1 1 0 !important;
+  min-width: 0 !important;
+  min-height: calc(100vh - var(--sl-nav-height) - var(--sl-mobile-toc-height));
+  background-color: var(--md-sys-color-surface, var(--sl-color-bg)) !important;
+}
+
+.content-panel {
+  max-width: 48rem !important;
+  margin: 0 auto !important;
+  padding-inline: 1.5rem !important;
+  background-color: transparent !important;
+}
+
+.right-sidebar {
+  border-inline-start: none !important;
+}
+
+main > :last-child {
+  margin-top: auto;
+}

@@ -14,6 +14,9 @@ export default defineConfig({
 					variant: 'tonalSpot',
 				})
 			],
+			customCss: [
+				'./src/styles/custom.css'
+			],
 			social: [
 				{ 
 					icon: 'github', 
